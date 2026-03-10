@@ -1,487 +1,244 @@
 ---
 name: vault-setup
-description: Interactive Obsidian vault configurator. Interviews the user across multiple tiers of questions and generates a personalized vault folder structure, CLAUDE.md, and starter slash commands. Use when someone wants to set up or restructure their Obsidian vault for use with Claude Code.
+description: Interactive Obsidian vault configurator. Interviews the user in 3 grouped wizard screens and then CREATES the vault structure, CLAUDE.md, and slash command skill files directly in the current directory. Use when someone wants to set up or restructure their Obsidian vault for use with Claude Code.
 ---
 
 # Vault Setup — Interactive Obsidian Configurator
 
-Interview the user across tiers and generate their personalized Obsidian vault structure,
-CLAUDE.md system file, and starter slash commands. Do NOT ask all questions at once.
-One tier at a time. Adapt follow-up questions based on prior answers.
+Run this from INSIDE the Obsidian vault folder (or wherever the user wants their vault).
+Interview in 3 grouped screens, then CREATE everything — don't just output instructions.
 
 ---
 
-## ENVIRONMENT SETUP (Run once before anything else)
+## SCREEN 1 — Role (single question, always first)
 
-Before the interactive prompts, check if `process_docs_to_obsidian.py` dependencies are ready.
-If the user mentions they have existing files to import, they will need:
-
-```
-# 1. Install dependencies
-pip install google-genai python-dotenv python-docx python-pptx
-
-# 2. Set up your API key
-cp .env.example .env
-# Then open .env and paste your Google API key
-# Get one free at: https://aistudio.google.com/apikey
-```
-
-The pre-processing script (`process_docs_to_obsidian.py`) uses **Gemini 3 Flash Preview**
-(`gemini-3-flash-preview`) via the `google-genai` Python library. It reads your
-`GOOGLE_API_KEY` from the `.env` file automatically.
-
----
-
-## TIER 1 — Role
-
-Use AskUserQuestion:
+Use AskUserQuestion with ONE question:
 
 ```
 Question: "What best describes how you primarily use a computer for work?"
 
 Options:
-A) Business Owner / Operator
-   — You run a team or company and need to track decisions, clients, projects, and operations
-B) Developer / Builder
-   — You write code, build tools, ship products, manage technical projects
-C) Consultant / Freelancer / Agency
-   — You work with clients, deliver projects, manage multiple relationships simultaneously
-D) Student / Researcher
-   — You study, write papers, synthesize knowledge from many sources
-E) Creator / YouTuber / Podcaster
-   — You make content: videos, newsletters, podcasts, social posts
+A) Business Owner / Operator — running a team or company
+B) Developer / Builder — writing code, shipping products
+C) Consultant / Freelancer / Agency — client work, project delivery
+D) Student / Researcher — studying, writing, synthesizing knowledge
+E) Creator / YouTuber / Podcaster — making content
 ```
 
 ---
 
-## TIER 2 — Role-Specific Follow-Ups
+## SCREEN 2 — Role follow-ups (ask ALL 3 in ONE AskUserQuestion call)
 
-Ask 3 questions based on the Tier 1 answer. Use AskUserQuestion one at a time.
+Based on the role answer, fire ONE AskUserQuestion with 3 questions at the same time.
 
-### If A (Business Owner / Operator):
-
-**Q2a:**
+### If A (Business Owner):
 ```
-Question: "What consumes most of your mental bandwidth day-to-day?"
-Options:
-A) Team, hiring, and operations
-B) Sales, clients, and revenue
-C) Product, roadmap, and delivery
-D) All of it equally — that's exactly the problem
-```
+Q1: "What consumes most of your mental bandwidth?"
+Options: Team & operations / Sales & clients / Product & roadmap / All equally
 
-**Q2b:**
-```
-Question: "Do you have a team?"
-Options:
-A) Solo — just me right now
-B) Small team (2–5 people)
-C) Growing team (6–20 people)
-D) Established organization (20+)
+Q2: "Team size?"
+Options: Solo / 2–5 people / 6–20 people / Larger
+
+Q3: "What do you most want Claude Code to help with?"
+Options: Faster decisions / Track everything / Writing & comms / Build automations
 ```
 
-**Q2c:**
+### If B (Developer):
 ```
-Question: "What do you most want Claude Code to help with inside your vault?"
-Options:
-A) Synthesizing information so I can make faster decisions
-B) Tracking everything so nothing falls through the cracks
-C) Writing and communication — emails, briefs, reports
-D) Building automations and workflows that run themselves
+Q1: "What do you primarily build?"
+Options: Apps & products / Scripts & automations / AI tools & agents / Mix of all
+
+Q2: "Client work or own projects?"
+Options: Clients / Own projects / Both
+
+Q3: "Beyond code, what else in this vault?"
+Options: Research & learning / Personal notes too / Just dev work / Client context
 ```
 
----
-
-### If B (Developer / Builder):
-
-**Q2a:**
+### If C (Consultant):
 ```
-Question: "What do you primarily build?"
-Options:
-A) Web or mobile apps and products
-B) Scripts, automations, and internal tools
-C) AI agents and LLM-powered systems
-D) A mix of all of the above
+Q1: "Type of work?"
+Options: Strategy & advisory / Technical / Creative / Mix
+
+Q2: "How many active clients?"
+Options: 1–3 / 4–10 / More than 10
+
+Q3: "What to track per client?"
+Options: Meeting notes & decisions / Project status / Invoices & contracts / All of it
 ```
 
-**Q2b:**
+### If D (Student/Researcher):
 ```
-Question: "Do you work with clients or on your own projects?"
-Options:
-A) Clients — I need to track their context separately
-B) My own projects and products
-C) Both — I have client work and personal projects running in parallel
+Q1: "What are you studying or researching?" (free text — ask them to type)
+
+Q2: "What to capture?"
+Options: Papers & sources / My own ideas / Projects & deadlines / Everything
+
+Q3: "Separate personal from academic?"
+Options: Yes completely / A little overlap is fine / No — one unified system
 ```
 
-**Q2c:**
+### If E (Creator):
 ```
-Question: "Beyond code, what else do you want to track in this vault?"
-Options:
-A) Research, documentation, and learning notes
-B) Personal notes and life planning alongside work
-C) Just development work — I want it focused
-D) Client relationships and project status
+Q1: "Type of content?"
+Options: Video (YouTube) / Written (newsletter/blog) / Both / Podcast
+
+Q2: "Active projects right now?"
+Options: 1–3 / 4–10 / More than 10
+
+Q3: "Work with sponsors or clients?"
+Options: Yes regularly / Sometimes / No — independent
 ```
 
 ---
 
-### If C (Consultant / Freelancer / Agency):
+## SCREEN 3 — Files + Goals (ask BOTH in ONE AskUserQuestion call)
 
-**Q2a:**
 ```
-Question: "What type of work do you deliver to clients?"
+Q1: "Existing files to import?"
 Options:
-A) Strategy and advisory (decks, frameworks, recommendations)
-B) Technical work (code, integrations, systems)
-C) Creative work (copy, design, content)
-D) A mix — depends on the engagement
-```
+  A) Yes — a lot (PDFs, docs, slides)
+  B) Yes — a handful
+  C) Starting fresh
 
-**Q2b:**
-```
-Question: "How many active clients do you typically manage at once?"
+Q2: "What should Claude Code do in this vault day-to-day?"
 Options:
-A) 1–3 (deep, focused relationships)
-B) 4–10 (busy — tracking is becoming a challenge)
-C) More than 10 (need a real system)
-```
-
-**Q2c:**
-```
-Question: "What do you most want to track per client?"
-Options:
-A) Meeting notes and decisions made
-B) Project status and deliverable deadlines
-C) Invoices, contracts, and business details
-D) All of the above
+  A) Research & synthesize — smarter contextual answers
+  B) Write in my voice — match my style from past work
+  C) Manage & organize — keep the vault sorted automatically
+  D) All of the above
 ```
 
 ---
 
-### If D (Student / Researcher):
+## GENERATION — Do all of this after the 3 screens
 
-**Q2a:**
-```
-Question: "What are you primarily studying or researching?"
-(Ask user to type their field or topic in a few words)
-```
+After collecting answers, do the following IN ORDER. Actually execute each step.
 
-**Q2b:**
-```
-Question: "What do you most want to capture and organize?"
-Options:
-A) Notes from papers, books, and sources (literature review)
-B) My own ideas, hypotheses, and thinking
-C) Project timelines, deadlines, and tasks
-D) Everything — one unified knowledge base
+### Step 1: Create the folder structure
+
+Use Bash to create the folders based on the role. Example for Business Owner:
+```bash
+mkdir -p inbox daily people operations decisions projects archive .claude/skills/daily .claude/skills/tldr .claude/skills/standup scripts
 ```
 
-**Q2c:**
-```
-Question: "Do you want to separate personal life from academic work?"
-Options:
-A) Yes — completely separate vaults or sections
-B) A little overlap is fine (e.g., personal goals alongside academic)
-C) No — I want one unified system for everything
-```
+Adapt folder names to the role:
+- Creator → inbox/ daily/ content/ research/ clients/ archive/
+- Developer → inbox/ daily/ projects/ research/ clients/ archive/
+- Consultant → inbox/ daily/ clients/ projects/ research/ archive/
+- Student → inbox/ daily/ notes/ research/ projects/ archive/
+- Business Owner → inbox/ daily/ people/ operations/ decisions/ projects/ archive/
 
----
+### Step 2: Write the CLAUDE.md file
 
-### If E (Creator / YouTuber / Podcaster):
+Write a CLAUDE.md file to the current directory using the Write tool.
 
-**Q2a:**
-```
-Question: "What kind of content do you make?"
-Options:
-A) Video (YouTube, short-form, Reels)
-B) Written (newsletter, blog, LinkedIn)
-C) Both video and written
-D) Podcast or audio
-```
+**Framing to use when explaining it:**
+> "This is your vault's memory file — Claude Code reads it automatically every time you open it here. It tells Claude who you are, how your vault is organized, and what to do in different situations. You never have to re-explain yourself."
 
-**Q2b:**
-```
-Question: "How many active projects or series are you running right now?"
-Options:
-A) 1–3 (focused, tight content operation)
-B) 4–10 (growing catalogue, need to track)
-C) More than 10 (prolific — organization is critical)
-```
-
-**Q2c:**
-```
-Question: "Do you work with clients, sponsors, or brand partners?"
-Options:
-A) Yes, regularly — need to track them properly
-B) Sometimes — occasional deals
-C) No — purely my own independent content
-```
-
----
-
-## TIER 3 — Existing Files (Always Ask)
-
-```
-Question: "Do you have existing files you want to bring into your vault?"
-Options:
-A) Yes — a lot (PDFs, Word docs, slide decks, old notes)
-   — We'll use process_docs_to_obsidian.py with Gemini 3 Flash to handle this
-B) Yes — a handful of files
-   — Easy to bring in with the script or manually
-C) Starting completely fresh
-   — We'll seed the vault from scratch with Claude Code
-```
-
----
-
-## TIER 4 — AI Goals (Always Ask)
-
-```
-Question: "What do you most want Claude Code to do inside this vault day-to-day?"
-Options:
-A) Research and synthesize — pull from my notes to give smarter, contextual answers
-B) Write in my voice — use my past work to match my style and thinking
-C) Manage and organize — keep the vault sorted, linked, and up to date automatically
-D) All of the above — I want the full compounding system
-```
-
----
-
-## GENERATION PHASE
-
-After all 4 tiers are complete, generate everything below. No more questions.
-
----
-
-### 1. Vault Folder Structure
-
-Generate a top-level folder structure (max 7 folders) tailored to their answers.
-Show as a clean directory tree with a one-line description per folder.
-
-Example format:
-```
-vault/
-├── 📁 clients/          # One subfolder per client with their full context
-├── 📁 projects/         # Active project briefs, status, and deliverables
-├── 📁 daily/            # Daily notes, quick captures, brain dumps
-├── 📁 research/         # Deep research, saved articles, synthesis notes
-├── 📁 decisions/        # Key decisions made and the reasoning behind them
-├── 📁 inbox/            # Drop anything here — Claude Code will sort it
-└── 📁 archive/          # Completed work (never delete, just move here)
-```
-
-Rules:
-- Always include `inbox/` — it's where pre-processed files and new drops land
-- Always include `archive/` — prevents deletion anxiety
-- Folder names: short, lowercase, no spaces
-- Max 7 top-level folders — if they want more, use subfolders
-
----
-
-### 2. CLAUDE.md Template
-
-Generate a ready-to-use CLAUDE.md tailored entirely to their role and answers.
-
+Content to write:
 ```markdown
-# CLAUDE.md — [Role/Name]'s Second Brain
+# CLAUDE.md — [Role]'s Second Brain
 
 ## Who I Am
-[1–2 paragraphs based on Tier 1–2 answers. Written in first person as Claude describing its owner.
-Be specific — mention their role, what they do, what they're trying to accomplish.]
+[1-2 paragraphs based on their answers — personal, specific, written as Claude describing its owner]
 
 ## Vault Structure
-[Paste their folder tree with one-line purposes]
+[Folder tree with one-line purpose per folder]
 
 ## Context Loading Rules
-When working on [their primary domain]:
-→ Read [most relevant folder] before starting
-
 When starting the day:
 → Read daily/[today's date].md if it exists
-→ Check inbox/ for any unprocessed files — sort them if found
+→ Check inbox/ for unprocessed files — sort if found
 
-When writing in my voice:
-→ Read [writing/content folder] first to calibrate tone and style
+When working on [primary domain]:
+→ Read [most relevant folder] before starting
 
-When working on a specific client or project:
-→ Read [clients/project-name] or [projects/name] first
+[Add 2-3 more rules specific to their role]
 
 ## How to Maintain This Vault
-- New files from outside always go into inbox/ first
+- New files → inbox/ first, always
 - Daily notes: daily/YYYY-MM-DD.md
-- Completed work moves to archive/ — never permanently delete
-- Update this CLAUDE.md whenever conventions or priorities change
+- Completed work → archive/ (never delete)
+- Update this file whenever conventions change
 
 ## My Conventions
-[2–4 conventions specific to their role and answers.
-E.g., for business owners: how decisions are documented.
-For developers: how projects are structured.
-For consultants: how client files are named.]
+[2-4 conventions based on role — specific, not generic]
 ```
 
----
+### Step 3: Write the skill files
 
-### 3. Starter Slash Commands
+Write these directly to .claude/skills/:
 
-Generate 3 slash commands. For each, provide:
-- Command name
-- Plain English description of what it does
-- Full SKILL.md content to paste into `.claude/skills/[name]/SKILL.md`
+**Always write /daily:**
+```
+.claude/skills/daily/SKILL.md
+```
+Content: read today's daily note or create one, check inbox, surface top 3 priorities, ask "What are we working on today?"
 
-**Always include these two:**
+**Always write /tldr:**
+```
+.claude/skills/tldr/SKILL.md
+```
+Content: summarize the conversation, save to the right folder automatically, update memory.md.
 
----
+**Role-specific third command:**
+- Business Owner → /standup: briefing across projects, decisions, team
+- Developer → /project [name]: load that project's full context
+- Consultant → /client [name]: load that client's context
+- Student → /research [topic]: pull all notes on a topic, synthesize
+- Creator → /content: read content folder, calibrate voice, help develop idea
 
-**/daily** — Starts your day with vault context
+### Step 4: Write memory.md
 
+Write a starter memory.md to the current directory:
 ```markdown
----
-name: daily
-description: Start the day. Read today's daily note or create one. Surface top priorities from active projects. Ask what we're working on.
----
+# Memory
 
-Read today's daily note at daily/YYYY-MM-DD.md (use today's actual date).
-If it doesn't exist, create it with this template:
+## Session Log
+[Claude Code will update this after each session]
 
-# [Today's Date]
+## My Preferences
+[Claude Code will add preferences here as it learns them]
 
-## Top of Mind
-
-## Today's Focus
-
-## Notes
-
-Then read the inbox/ folder and list any unprocessed files found.
-Read the most relevant active project or client folder for context.
-Summarize the top 3 priorities for today based on recent notes.
-Ask: "What are we working on today?"
+## Vault Last Updated
+[Auto-updated]
 ```
 
----
+### Step 5: Report back — clearly and simply
 
-**/tldr** — Crystallizes the current session into a vault note
-
-```markdown
----
-name: tldr
-description: Save a summary of this conversation to the vault. Key decisions, things to remember, next actions. Store in the right folder automatically.
----
-
-Summarize this conversation:
-1. What was decided or figured out
-2. Key things to remember
-3. Next actions (if any)
-
-Format as a clean markdown note with today's date in the title.
-Save it to the most relevant folder based on the topic discussed.
-If it relates to a client, save to clients/[name]/.
-If it relates to a project, save to projects/[name]/.
-If general, save to daily/ with today's date.
-
-Also update memory.md (if it exists at the vault root) with any new patterns,
-preferences, or conventions discovered in this session.
-```
+After creating everything, say exactly this format:
 
 ---
 
-**Third command** — role-specific:
+**Your vault is set up.**
 
-- **Business Owner** → `/standup`
-  ```
-  Read all active project and client folders briefly.
-  Summarize what's in progress, what's blocked, and what needs a decision today.
-  Format as a morning briefing: 5 bullets max per area.
-  Ask: "What needs attention first?"
-  ```
-
-- **Developer** → `/project [name]`
-  ```
-  Read projects/[name]/ fully.
-  Summarize current status, what was last worked on, and what's next.
-  Load any relevant research or documentation from the vault.
-  Ask: "Where are we picking up?"
-  ```
-
-- **Consultant** → `/client [name]`
-  ```
-  Read clients/[name]/ fully.
-  Summarize their context: who they are, what we're working on, recent decisions.
-  Surface any open items or upcoming deadlines.
-  Ask: "What are we doing for [name] today?"
-  ```
-
-- **Student / Researcher** → `/research [topic]`
-  ```
-  Search the entire vault for notes related to [topic].
-  Synthesize the key ideas, connections, and gaps found.
-  List the source notes referenced.
-  Ask: "What do you want to explore or write about this?"
-  ```
-
-- **Creator** → `/content`
-  ```
-  Read the content/ folder for recent scripts, briefs, and published work.
-  Calibrate voice and style from past content.
-  Ask: "What are we creating today — and what's it about?"
-  Then help develop the idea using vault context.
-  ```
-
----
-
-### 4. Pre-Processing Instructions (If They Have Existing Files)
-
-If they answered A or B in Tier 3, include this section after the commands:
+Here's what was created in `[current directory]`:
 
 ```
-## Bringing In Your Existing Files
-
-You'll use process_docs_to_obsidian.py — a script that uses Gemini 3 Flash
-to read any file type, extract the signal, and save clean Markdown notes.
-
-SETUP (one time only):
-  pip install google-genai python-dotenv python-docx python-pptx
-  cp .env.example .env
-  # Add your Google API key to .env
-  # Get a free key at: https://aistudio.google.com/apikey
-
-RUN:
-  python process_docs_to_obsidian.py ~/your-files-folder ~/vault/inbox
-
-WHAT IT DOES:
-  → Reads PDFs, PPTX, DOCX, TXT files
-  → Uses Gemini 3 Flash (gemini-3-flash-preview) to synthesize each file
-  → Outputs clean, compressed Markdown with YAML frontmatter
-  → Saves to your inbox/ folder (300–600 words per note, signal only)
-
-AFTER IT RUNS:
-  Open Claude Code in your vault and say:
-  "Sort everything in inbox/ into the right folders based on CLAUDE.md"
-
-  Claude Code will route each note to the correct folder automatically.
+[show the actual folder tree that was created]
 ```
 
+**The CLAUDE.md file** is your vault's memory — Claude Code reads it automatically every time you open this folder. It already knows your role, your structure, and what you need. You never have to explain yourself again.
+
+**Your 3 slash commands are ready:**
+- `/daily` — start your day with vault context
+- `/tldr` — save any session to the right folder
+- `/[role-specific]` — [one line description]
+
+**Next: open this vault in Obsidian**
+1. Open Obsidian → Open folder as vault → select `[current directory]`
+2. Settings → General → Enable Command Line Interface
+3. Come back here and type `/daily` to start
+
+**If you have files to import:**
+```bash
+python scripts/process_docs_to_obsidian.py ~/your-files-folder inbox/
+```
+Then say: "Sort everything in inbox/ into the right folders"
+
 ---
 
-## FINAL OUTPUT ORDER
+Keep the output clean. No walls of text. No markdown headers showing raw `---` lines.
+The user should be able to read it in 20 seconds and know exactly what to do.
 
-Present in this sequence:
-1. **"Here's your vault structure:"** — folder tree
-2. **"Here's your CLAUDE.md:"** — full file in a code block, ready to copy
-3. **"Here are your 3 slash commands:"** — each with full SKILL.md content
-4. If applicable: **"Here's how to bring in your existing files:"** — pre-processing instructions
-
-Close with:
-> "To get started: create these folders in your vault, drop the CLAUDE.md at the root,
-> and open Claude Code from inside your vault with `claude`.
-> Your second brain is ready — and this time, you won't forget to use it."
-
----
-
-## DESIGN RULES
-
-- Folder names: lowercase, no spaces, memorable
-- Never more than 7 top-level folders
-- CLAUDE.md always written in first person ("my vault", "I work on")
-- Slash commands must be immediately useful on day 1, not aspirational
-- The inbox/ → sort pattern is the core loop — always explain it
-- .env.example is the shareable version; .env is always local/gitignored
