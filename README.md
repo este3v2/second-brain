@@ -214,6 +214,12 @@ It reads your CLAUDE.md, understands your vault structure, and routes every note
 
 **Supported formats:** `.pdf` `.docx` `.pptx` `.txt` `.md`
 
+> **Have Excel, CSV, or JSON files too?** Use the broader script instead:
+> ```bash
+> python3 scripts/process_files_with_gemini.py ~/your-files
+> ```
+> This handles `.xlsx` `.csv` `.json` `.xml` `.py` `.js` `.html` and most text-based files. Results land in `outputs/file_summaries/` with a `MASTER_SUMMARY.md` digest of everything.
+
 ---
 
 ## How the Memory Works
