@@ -183,7 +183,7 @@ read -p "  Folder path to import (or press Enter to skip): " IMPORT_FOLDER
 if [ -n "$IMPORT_FOLDER" ] && [ -d "$IMPORT_FOLDER" ]; then
   echo ""
   echo "  Processing files with Gemini 3 Flash..."
-  "$SCRIPT_DIR/.venv/bin/python3" "$VAULT_PATH/scripts/process_docs_to_obsidian.py" \
+  "$HOME/.second-brain-venv/bin/python3" "$VAULT_PATH/scripts/process_docs_to_obsidian.py" \
     "$IMPORT_FOLDER" "$VAULT_PATH/inbox"
   echo ""
   echo -e "  ${GREEN}✓${RESET} Files processed → saved to $VAULT_PATH/inbox"
