@@ -72,7 +72,7 @@ The result: an AI that knows who you are from the first prompt of every session.
 **Option A — One-liner** (paste this into Terminal and hit Enter):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/promptadvisers/second-brain/main/setup.sh -o setup.sh && bash setup.sh
+curl -fsSL https://raw.githubusercontent.com/earlyaidopters/second-brain/main/setup.sh -o setup.sh && bash setup.sh
 ```
 
 **Option B — Clone the repo:**
@@ -80,7 +80,7 @@ curl -fsSL https://raw.githubusercontent.com/promptadvisers/second-brain/main/se
 Open **Terminal** (press `⌘ Space`, type `Terminal`, hit Enter) and run:
 
 ```bash
-git clone https://github.com/promptadvisers/second-brain.git
+git clone https://github.com/earlyaidopters/second-brain.git
 cd second-brain
 ./setup.sh
 ```
@@ -101,7 +101,7 @@ cd second-brain
 **Option A — One-liner** (paste this into PowerShell and hit Enter):
 
 ```powershell
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/promptadvisers/second-brain/main/setup.ps1" -OutFile setup.ps1; powershell -ExecutionPolicy Bypass -File setup.ps1
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/earlyaidopters/second-brain/main/setup.ps1" -OutFile setup.ps1; powershell -ExecutionPolicy Bypass -File setup.ps1
 ```
 
 **Option B — Clone the repo:**
@@ -109,7 +109,7 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/promptadvisers/second-
 Once git is ready, run:
 
 ```powershell
-git clone https://github.com/promptadvisers/second-brain.git
+git clone https://github.com/earlyaidopters/second-brain.git
 cd second-brain
 powershell -ExecutionPolicy Bypass -File setup.ps1
 ```
@@ -284,7 +284,7 @@ curl -fsSL https://claude.ai/install.sh | sh
 
 **4. Download and set up the vault**
 ```bash
-git clone https://github.com/promptadvisers/second-brain.git
+git clone https://github.com/earlyaidopters/second-brain.git
 mkdir -p ~/second-brain/{inbox,daily,projects,research,archive,.claude/skills/vault-setup,.claude/skills/daily,.claude/skills/tldr,.claude/skills/file-intel,scripts}
 cp second-brain/CLAUDE.md second-brain/memory.md ~/second-brain/
 cp second-brain/skills/vault-setup/SKILL.md ~/second-brain/.claude/skills/vault-setup/
@@ -338,7 +338,7 @@ Download from [python.org/downloads](https://python.org/downloads). On the insta
 
 **4. Download and set up the vault**
 ```powershell
-git clone https://github.com/promptadvisers/second-brain.git
+git clone https://github.com/earlyaidopters/second-brain.git
 $vault = "$env:USERPROFILE\second-brain"
 New-Item -ItemType Directory -Force -Path "$vault\inbox","$vault\daily","$vault\projects","$vault\research","$vault\archive","$vault\scripts","$vault\.claude\skills\vault-setup","$vault\.claude\skills\daily","$vault\.claude\skills\tldr","$vault\.claude\skills\file-intel" | Out-Null
 Copy-Item "second-brain\CLAUDE.md","second-brain\memory.md" $vault

@@ -1,16 +1,8 @@
 # Memory
 
-## Session Log
-[Claude Code updates this after each session — key decisions, what you worked on, what changed.]
+This file is updated by Claude Code after each session.
+Use it to track key decisions, context, and continuations across conversations.
 
-## Vault Last Updated
-[Auto-updated by Claude Code]
+---
 
-## My Preferences
-[Claude Code adds your preferences here as it learns them — writing style, how you like things organised, shortcuts you use.]
-
-## Ongoing Projects
-[Projects Claude Code should know about across sessions.]
-
-## Things to Remember
-[Anything you want Claude Code to carry forward — decisions made, tools preferred, context that shouldn't be lost.]
+<!-- Claude Code appends session summaries below this line -->
