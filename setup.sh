@@ -99,12 +99,12 @@ fi
 # ─── STEP 3: Obsidian ────────────────────────────────────────────────────────
 echo ""
 echo -e "${WHITE}Step 2/7 — Installing Obsidian${RESET}"
-if ! brew list --cask obsidian &>/dev/null 2>&1; then
+if [[ -d "/Applications/Obsidian.app" ]] || brew list --cask obsidian &>/dev/null 2>&1; then
+  echo -e "  ${GREEN}✓${RESET} Obsidian already installed"
+else
   echo "  Installing Obsidian..."
   brew install --cask obsidian
   echo -e "  ${GREEN}✓${RESET} Obsidian installed"
-else
-  echo -e "  ${GREEN}✓${RESET} Obsidian already installed"
 fi
 
 # ─── STEP 4: Claude Code ─────────────────────────────────────────────────────
