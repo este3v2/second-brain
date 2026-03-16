@@ -87,6 +87,11 @@ echo -e "${WHITE}Step 1/7 — Checking dependencies + Homebrew${RESET}"
 if ! command -v brew &>/dev/null; then
   echo "  Installing Homebrew..."
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  if [[ -f /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [[ -f /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
 else
   echo -e "  ${GREEN}✓${RESET} Homebrew already installed"
 fi
